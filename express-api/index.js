@@ -1,11 +1,30 @@
 import express from "express";
 import morgan from "morgan";
-import { FindUserByEmail, CreateUser } from "./db.js";
-import { comparePassword, generateToken } from "./auth.js";
+import { FindUserByEmail, CreateUser, UpdateUserBio } from "./db.js";
+import { authenticateToken, comparePassword, generateToken } from "./auth.js";
 
 const app = express();
 app.use(morgan('tiny'));
 app.use(express.json());
+
+app.get("/user", authenticateToken, async (req, res)=>{
+    const user = await FindUserByEmail(req.user.email);
+    if(user){
+        res.send({name: user.name, email: user.email, bio: user.bio})
+    }else{
+        res.status(404).send({message: "User not found"})
+    }
+});
+
+app.post("/bio", authenticateToken, async (req, res)=>{
+    const user = await FindUserByEmail(req.user.email);
+    if(user){
+        await UpdateUserBio(req.user.email, req.body.bio);
+        res.status(200).send({message: "Bio updated successfully"})
+    }else{
+        res.status(404).send({message: "User not found"})
+    }
+});
 
 app.post("/login", async (req, res)=>{
     const {email, password} = req.body;

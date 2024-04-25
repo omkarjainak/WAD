@@ -16,3 +16,16 @@ Content-Type: application/json
     "email": "test2@yopmail.com",
     "password": "test12"
 }
+
+###
+GET http://localhost:3002/user
+x-access-token : <token>
+
+###
+POST http://localhost:3002/bio
+Content-Type: application/json
+x-access-token : <token>
+
+{
+    "bio": "I am a test user"
+}
