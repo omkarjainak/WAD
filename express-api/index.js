@@ -1,4 +1,5 @@
 import express from "express";
+import helmet from "helmet";
 import morgan from "morgan";
 import { FindUserByEmail, CreateUser, UpdateUserBio } from "./db.js";
 import { authenticateToken, comparePassword, generateToken } from "./auth.js";
@@ -6,6 +7,7 @@ import { authenticateToken, comparePassword, generateToken } from "./auth.js";
 const app = express();
 app.use(morgan('tiny'));
 app.use(express.json());
+app.use(helmet());
 
 app.get("/user", authenticateToken, async (req, res)=>{
     const user = await FindUserByEmail(req.user.email);
